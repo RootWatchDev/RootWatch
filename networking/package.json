@@ -1,0 +1,6 @@
+{
+  "name": "@rootwatch/networking",
+  "scripts": {
+    "build": "rootsdk build proto"
+  }
+}

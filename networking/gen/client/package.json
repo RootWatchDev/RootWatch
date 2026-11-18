@@ -1,0 +1,13 @@
+{
+  "name": "@rootwatch/gen-client",
+  "version": "1.0.1795007878765",
+	"dependencies": {
+		"@rootwatch/gen-shared": "file:../shared"
+	},
+  "main": "./dist/mjs/index.js",
+  "typings": "./dist/mjs/index.d.ts",
+	"type": "module",
+	"scripts": { 
+		"build": "tsc"
+	}
+}

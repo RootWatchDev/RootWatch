@@ -1,0 +1,33 @@
+{
+  "name": "@rootwatch/app",
+  "description": "rootwatch",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@rootsdk/client-app": "*",
+    "@rootsdk/server-app": "*",
+    "@rootwatch/gen-client": "file:./networking/gen/client",
+    "@rootwatch/gen-server": "file:./networking/gen/server",
+    "@rootwatch/gen-shared": "file:./networking/gen/shared",
+    "puppeteer-core": "^24.43.1"
+  },
+  "devDependencies": {
+    "@rootsdk/dev-tools": "*",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.8.2"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "clean": "node clean.js"
+  },
+  "workspaces": {
+    "packages": [
+      "./networking",
+      "./server",
+      "./client"
+    ]
+  }
+}

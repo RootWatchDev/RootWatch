@@ -1,0 +1,19 @@
+{
+  "id": "ADJ9esh5hQm_THRuF_6AcQ",
+  "version": "1.0.0",
+  "package": {
+    "client": {
+      "deploy": "client/dist"
+    },
+    "server": {
+      "launch": "server/dist/main.js",
+      "deploy": [
+        "server/dist",
+        "networking/gen/server"
+      ],
+      "nodeModules": [
+        "node_modules"
+      ]
+    }
+  }
+}

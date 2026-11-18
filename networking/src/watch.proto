@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+import "rootsdk/types.proto";
+
+enum PlaybackState {
+  PLAYBACK_STATE_PAUSED = 0;
+  PLAYBACK_STATE_PLAYING = 1;
+  PLAYBACK_STATE_BUFFERING = 2;
+  PLAYBACK_STATE_ENDED = 3;
+}
+
+enum MediaSourceType {
+  MEDIA_SOURCE_YOUTUBE = 0;
+  MEDIA_SOURCE_DIRECT = 1;
+}
+
+message MediaItem {
+  string id = 1;
+  string url = 2;
+  string title = 3;
+  string thumbnail_url = 4;
+  double duration_seconds = 5;
+  MediaSourceType source_type = 6;
+  string queued_by_user_id = 7;
+  string queued_by_username = 8;
+}
+
+message RoomPlaybackState {
+  MediaItem current_media = 1;
+  PlaybackState state = 2;
+  double position_seconds = 3;
+  int64 updated_at_server_ms = 4;
+  double playback_rate = 5;
+  string controlled_by_user_id = 6;
+  string controlled_by_username = 7;
+  repeated MediaItem playlist = 8;
+  bool dj_mode_enabled = 9;
+  string host_user_id = 10;
+}
+
+message TimeSyncRequest {
+  int64 client_send_time_ms = 1;
+}
+
+message TimeSyncResponse {
+  int64 client_send_time_ms = 1;
+  int64 server_receive_time_ms = 2;
+  int64 server_send_time_ms = 3;
+}
+
+message UpdatePlaybackRequest {
+  PlaybackState new_state = 1;
+  double position_seconds = 2;
+  double playback_rate = 3;
+}
+
+message QueueMediaRequest {
+  string url = 1;
+  string title = 2;
+  MediaSourceType source_type = 3;
+  double duration_seconds = 4;
+}
+
+message RemoveQueueRequest {
+  string media_id = 1;
+}
+
+message ReorderQueueRequest {
+  string media_id = 1;
+  int32 new_index = 2;
+}
+
+message ToggleDjModeRequest {
+  bool dj_mode_enabled = 1;
+}
+
+message SendReactionRequest {
+  string emoji = 1;
+}
+
+message ReactionEvent {
+  string id = 1;
+  string user_id = 2;
+  string username = 3;
+  string emoji = 4;
+  int64 timestamp_ms = 5;
+}
+
+message SpectatorStatusReport {
+  double current_position = 1;
+  bool is_buffering = 2;
+  double drift_ms = 3;
+}
+
+message SpectatorInfo {
+  string user_id = 1;
+  string username = 2;
+  bool is_buffering = 3;
+  double drift_ms = 4;
+  bool in_sync = 5;
+  int64 last_seen_ms = 6;
+}
+
+message SpectatorListEvent {
+  repeated SpectatorInfo spectators = 1;
+}
+
+service WatchService {
+  rpc SyncTime(TimeSyncRequest) returns (TimeSyncResponse);
+  rpc GetRoomState(rootsdk.Void) returns (RoomPlaybackState);
+  rpc UpdatePlayback(UpdatePlaybackRequest) returns (RoomPlaybackState);
+  rpc QueueMedia(QueueMediaRequest) returns (RoomPlaybackState);
+  rpc RemoveFromQueue(RemoveQueueRequest) returns (RoomPlaybackState);
+  rpc SkipToNext(rootsdk.Void) returns (RoomPlaybackState);
+  rpc ToggleDjMode(ToggleDjModeRequest) returns (RoomPlaybackState);
+  rpc SendReaction(SendReactionRequest) returns (rootsdk.Void);
+  rpc ReportStatus(SpectatorStatusReport) returns (rootsdk.Void);
+
+  // Broadcasts
+  rpc BroadcastPlaybackUpdated(RoomPlaybackState) returns (rootsdk.Void);
+  rpc BroadcastQueueUpdated(RoomPlaybackState) returns (rootsdk.Void);
+  rpc BroadcastReactionReceived(ReactionEvent) returns (rootsdk.Void);
+  rpc BroadcastSpectatorsUpdated(SpectatorListEvent) returns (rootsdk.Void);
+}
